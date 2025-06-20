@@ -114,7 +114,15 @@ Load and open up casa
     module load casa/6.7.0
     casa
 
-Run the prep-ms script:
+Side quest: If this is your first time running CASA on Talapas, you may get an error from CASA like
+
+    data_update: path must exist as a directory and it must be owned by the user, path = /home/user/.casa/data
+
+You can fix it via
+
+    mkdir ~/.casa/data
+
+Now run the prep-ms script:
 
     execfile("prep-ms-for-auto-selfcal.py")
 
