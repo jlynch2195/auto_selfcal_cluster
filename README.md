@@ -1,5 +1,7 @@
 # Run automatic self-calibration on UO cluster Talapas 
-All credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal). This code is designed to streamline running github code auto_selfcal on UO cluster Talapas. Note: this repo is currently not synced to the version of this code on Talapas. Use the scripts on Talapas instead of these, with the exception of analyze-final-images.py, which only exists here at the moment.
+All credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal). This code is designed to streamline running github code auto_selfcal on UO cluster Talapas. 
+
+NOTE: this repo is currently not synced to the version of this code on Talapas. Use the scripts on Talapas instead of these, with the exception of analyze-final-images.py, which only exists here at the moment.
 
 ## Getting started with GitHub
 To obtain a local copy of this code + its supporting materials, clone the repository in Terminal via
