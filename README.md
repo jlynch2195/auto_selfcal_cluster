@@ -1,5 +1,5 @@
-# Run automatic self-calibration (https://github.com/psheehan/auto_selfcal) on UO cluster Talapas 
-Note: currently not synced to the version of this code on Talapas. Use the scripts on Talapas instead of these, with the exception of analyze-final-images.py, which only exists here at the moment.
+# Run automatic self-calibration on UO cluster Talapas 
+All credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal). This code is designed to streamline running github code auto_selfcal on UO cluster Talapas. Note: this repo is currently not synced to the version of this code on Talapas. Use the scripts on Talapas instead of these, with the exception of analyze-final-images.py, which only exists here at the moment.
 
 ## Getting started with GitHub
 To obtain a local copy of this code + its supporting materials, clone the repository in Terminal via
@@ -14,13 +14,12 @@ You only have to do this once. To update your local copy to match the newest ver
 You may get error/warning messages about needing to commit changes before pulling, meaning you've made edits to the existing files and git doesn't want to override those. If you want to keep your version, you can rename yours to avoid overwriting them. There's probably better practice; it's worth a Google.
 
 ## Repository contents:
-1. auto-image-singlefreq.py: script to create an image from a single-frequency VLA observation
-2. (in progress) auto-image-multifreq.py: script to create a set of images from a multi-frequency VLA observation
-3. vla-configuration-schedule.csv: table from https://science.nrao.edu/facilities/vla/proposing/configpropdeadlines
-4. vla-resolution.csv: table from https://science.nrao.edu/facilities/vla/docs/manuals/oss/performance/resolution
-5. config.example.yaml: an example file where you should define your imaging parameters. For how to use it, see note below.
-6. .gitignore: ignore this
-7. requirements.txt: required packages, can be installed via pip install -r requirements.txt
+1. prep-ms-for-auto-selfcal.py: Script to prep your measurement set in the current working directory for auto_selfcal. It first splits the main.ms file into main_target.ms. Then it splits the main_target.ms by spectral windows based on the user-specified split_bands command. Finally, it writes batch files to perform auto_selfcal on each of these split measurement sets and saves the batch file paths to a text file. No auto_selfcal will be done by running this script: it just sets up batch scripts.
+2. submit_batch_of_batch_jobs.py: Simple script to submit all the batch jobs that prep-ms-for-auto-selfcal.py wrote.
+3. analyze-final-images.py: Script to fit for a point source at target location and create a snapshot FITS file. Operates on a list of files but will work with just one. Returns a .csv file of image statistics and a 128x128 snapshot zoomed in at target location.
+4. vla-configuration-schedule.csv: table from https://science.nrao.edu/facilities/vla/proposing/configpropdeadlines
+5. vla-resolution.csv: table from https://science.nrao.edu/facilities/vla/docs/manuals/oss/performance/resolution
+
 
 ## Get familiar with Talapas
 Login with
