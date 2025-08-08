@@ -1,0 +1,12 @@
+# Ignore Python bytecode
+__pycache__/
+*.pyc
+
+# Ignore Jupyter notebooks
+*.ipynb_checkpoints/
+
+# Ignore VSCode config
+.vscode/
+
+# Ignore system files
+.DS_Store
