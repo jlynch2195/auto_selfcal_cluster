@@ -10,7 +10,7 @@ I have found auto_selfcal to be good at...
 * Producing clean noise pattern free of patches near source
 * Achieving low RMS. Ex: the following RMS values are achieved from 2hr SEDs with strong source signal: 15-40 uJy in L-band, 10-35 uJy in S-band, 20-40 uJy in C-band, and 20-35 uJy in X-band.
 
-If your image is already decent quality around your source location, it will not do dramatically change the flux values and RMS levels you'll report, though it may visually improve the image. However, if you have a wonky SED, it's worth trying out.
+If your image is already decent quality around your source location, it will not dramatically change the flux values and RMS levels you'll report, though it may visually improve the image. However, if you have a wonky SED, it's worth trying out.
 
 ## How auto_selfcal works and why my scripts use it impractically:
 Patrick Sheehan's auto_selfcal (https://github.com/psheehan/auto_selfcal) solves for a range of calibration solutions using different solution intervals and applies the best-fit ones to the measurement set. It then creates a final image for you using the self-cal measurement set. It has capability to do a multi-frequency .ms for an SED but it would realistically require running in parallel using mpicasa, which I have found to error on both Talapas and NRAO. Also, you'll miss out on getting split-band images if you self-cal the entire SED unless you then apply the calibrations to create the _final.ms and then re-image the _final.ms yourself. That is probably a good thing to work out at some point, but it seemed like extra steps. 
