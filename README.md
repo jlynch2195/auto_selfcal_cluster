@@ -111,8 +111,7 @@ It's probably not required, but you want the file system to be ~/Desktop/project
 
 Now your filesystem is setup to be compatible with how I've written the scripts.
 
-## Set up auto-selfcal script
-
+## Set up auto-selfcal script Pt. 1: Do this only once, ever!
 Super important: this part takes some care and is vital to things working correctly!!! You'll need two sets of files: the auto_selfcal github repo, and my auto_selfcal_cluster repo, which you can clone into your Desktop via
 
     cd ~/Desktop
@@ -128,6 +127,7 @@ The files in auto_selfcal_cluster need to know where the auto_selfcal repo is. S
 
 You'll also need to edit your username into a couple of other places: line 9 in install_pandas.py, and line 7 in clean_up_post_selfcal.py. Do these with nano as just above.
 
+## Set up auto-selfcal script Pt. 2: Do this everytime you run auto_selfcal!
 The auto_selfcal repo will live untouched in the location you wrote it. However, the scripts in the auto_selfcal_cluster folder need to be copied over into each observation folder directory and edited there to change things like the .ms name, frequencies, and so on. This makes version control somewhat challenging because you're not copying the repo itself, just the files in it, so you miss out on history. Copy over all the files from auto_selfcal_cluster:
 
     cp -r ~/Desktop/auto_selfcal_cluster/* ~/Desktop/project_code/project_code.source_name.YYYY-MM-DD
