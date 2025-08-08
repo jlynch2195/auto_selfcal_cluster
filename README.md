@@ -1,7 +1,13 @@
-# Run automatic self-calibration on UO cluster Talapas 
-All credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal). This code is designed to streamline running github code auto_selfcal on UO cluster Talapas. 
+# Run automatic self-calibration on NRAO cluster 
+All credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal). This code is designed to streamline running github code auto_selfcal on clusters we have access to at UO and NRAO. 
 
-NOTE: this repo is currently not synced to the version of this code on Talapas. Use the scripts on Talapas instead of these, with the exception of analyze-final-images.py, which only exists here at the moment.
+(TODO) NOTE: this code can be tweaked to run on Talapas with the following changes with respect to filesystem and SLURM scheduler options.
+
+## How auto_selfcal works and why my scripts use it impractically:
+Patrick Sheehan's auto_selfcal (https://github.com/psheehan/auto_selfcal) solves for a range of calibration solutions using different solution intervals and applies the best-fit ones to the measurement set. It then creates a final image for you using the self-cal measurement set. It has capability to do a multi-frequency .ms for an SED but it would realistically require running in parallel using mpicasa, which I have found to error on both Talapas and NRAO. Also, I don't believe you can create a split-band image if you self-cal the entire SED unless you then apply the calibrations to create the _final.ms and then image the _final.ms yourself. That is probably a good thing to work out at some point, but it seemed like extra steps. Here's the workaround that I've adapted: split your .ms into the half-bands and then submit separate batch jobs for each. This in theory solves two issues: a) you get automatic _final.image.tt0 images from the auto_selfcal script without having to re-image from the _final.ms and b) you can submit several of these split-band auto_selfcal jobs at the same time, effectively running an entire SED worth in 8-12 parallel jobs. It gets the job done.
+
+## Other notes
+Low-frequencies at A-config take forever to run (sometimes timing out after a week) and produce large (~2GB) _final.* files. I'm yet to establish the trend exactly. Consider this before running auto_selfcal on SEDs taken at A config.
 
 ## Getting started with GitHub
 To obtain a local copy of this code + its supporting materials, clone the repository in Terminal via
@@ -14,6 +20,8 @@ You only have to do this once. To update your local copy to match the newest ver
     git pull
 
 You may get error/warning messages about needing to commit changes before pulling, meaning you've made edits to the existing files and git doesn't want to override those. If you want to keep your version, you can rename yours to avoid overwriting them. There's probably better practice; it's worth a Google.
+
+
 
 ## Repository contents:
 1. prep-ms-for-auto-selfcal.py: Script to prep your measurement set in the current working directory for auto_selfcal. It first splits the main.ms file into main_target.ms. Then it splits the main_target.ms by spectral windows based on the user-specified split_bands command. Finally, it writes batch files to perform auto_selfcal on each of these split measurement sets and saves the batch file paths to a text file. No auto_selfcal will be done by running this script: it just sets up batch scripts.
