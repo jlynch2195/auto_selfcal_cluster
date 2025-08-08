@@ -1,3 +1,4 @@
+import glob
 import numpy as np
 import os
 import pandas as pd
@@ -8,8 +9,13 @@ import time
 from datetime import datetime
 
 # read params from config.yaml
-measurement_set = "24A-322.ASASSN-14ae.2024-08-08.ms"
-source_name = "ASASSN-14ae"
+measurement_set = "25A-060.AT2019qiz.2025-06-01.ms"
+source_name = "AT2019qiz"
+split_band = "whole"
+use_single_band = False
+single_band = "EVLA_C"
+use_single_freq = False
+single_freq = 9
 
 # Function to scrape a listfile for information needed for tclean ================================================================
 # Inputs:
@@ -118,8 +124,8 @@ def scrape_listfile(listfile, source_name):
         df_band = df.iloc[indxs]
     
         # remove two cal spws from X-band
-        #if band == "EVLA_X":
-        #    df_band = df_band.iloc[2:]
+        if band == "EVLA_X":
+            df_band = df_band.iloc[2:]
     
         # split into frequency bands
         nspws = df_band.shape[0]
@@ -129,18 +135,24 @@ def scrape_listfile(listfile, source_name):
     
         # lower
         freq_ghz = round(df_lower["CtrFreq(MHz)"].values.astype(float).mean()/1000, 2)
+        if band == "EVLA_L":
+            freq_ghz = 1.25
         spws = df_lower["SpwID"].values.astype(int)
         spw_range = f"{min(spws)}~{max(spws)}"
         rows_list.append({"band":band, "split":"lower", "freq [GHz]":freq_ghz, "spws":spw_range, "cell size [arcsec/pixel]":cell_size})
     
         # upper
         freq_ghz = round(df_upper["CtrFreq(MHz)"].values.astype(float).mean()/1000, 2)
+        if band == "EVLA_L":
+            freq_ghz = 1.5
         spws = df_upper["SpwID"].values.astype(int)
         spw_range = f"{min(spws)}~{max(spws)}"
         rows_list.append({"band":band, "split":"upper", "freq [GHz]":freq_ghz, "spws":spw_range, "cell size [arcsec/pixel]":cell_size})
 
         # all
         freq_ghz = round(df_all["CtrFreq(MHz)"].values.astype(float).mean()/1000, 2)
+        if band == "EVLA_L":
+            freq_ghz = 1.75
         spws = df_all["SpwID"].values.astype(int)
         spw_range = f"{min(spws)}~{max(spws)}"
         rows_list.append({"band":band, "split":"all", "freq [GHz]":freq_ghz, "spws":spw_range, "cell size [arcsec/pixel]":cell_size})
@@ -154,48 +166,75 @@ def scrape_listfile(listfile, source_name):
 
 def split_ms(df_store, measurement_set_target):
 
+    split_ms_names = []
     freq_directories = []
     for i, row in df_store.iterrows():
         spws = row["spws"]
         freq = f"{row['freq [GHz]']}GHz"
         band = row["band"]
 
-        freq_directory = f"{ms_directory}/{freq}"
+        freq_directory = f"{ms_directory}{freq}"
         if not os.path.exists(freq_directory):
             os.makedirs(freq_directory)
 
         outputvis_name = f"{freq_directory}/{ms_prefix}.{band}.{freq}_target.ms"
-        split(vis=measurement_set, spw=spws, outputvis=outputvis_name)
+        if not os.path.exists(outputvis_name):
+            split(vis=measurement_set_target, datacolumn="all", spw=spws, outputvis=outputvis_name)
+            print(f"Finished splitting {freq_directory} with spws {spws}")
+        else:
+            print(f"MS already split at {freq_directory} with spws {spws}")
+    
+        split_ms_names.append(outputvis_name)
         freq_directories.append(freq_directory)
 
-    return freq_directories
+    return freq_directories, split_ms_names
 
 # where things are
 ms_directory = os.path.dirname(measurement_set)
-auto_sc_files_directory = "/gpfs/projects/nova/auto_selfcal"
+auto_sc_files_directory = "/lustre/aoc/observers/nm-14416/Desktop/auto_selfcal"
 
 # create listfile and scrape for tclean parameters
-listfile = ms_directory+"/listfile.txt"
+listfile = ms_directory+"listfile.txt"
 listobs(vis=measurement_set, listfile=listfile, overwrite=True)
 print(f"Created listfile {listfile} \n")
 df_store, field = scrape_listfile(listfile, source_name)
 
+# trim down df_store to just what user wants
+if split_band == "whole":
+    df_store = df_store[df_store["split"] == "all"].reset_index(drop=True)
+elif split_band == "halves":
+    df_store = df_store[df_store["split"].isin(["upper", "lower"])].reset_index(drop=True)
+
+if use_single_band:
+    df_store = df_store[df_store["band"] == single_band].reset_index(drop=True)
+
+if use_single_freq:
+    df_store = df_store[df_store["freq [GHz]"] == single_freq].reset_index(drop=True)
+
 # split original measurement set into _target measurement set
 ms_prefix = os.path.splitext(measurement_set)[0]
 measurement_set_target = f"{ms_prefix}_target.ms"
+print(df_store)
+print(field)
+print(measurement_set_target)
 print(f"Splitting into _target.ms")
-split(vis=measurement_set, field=field, outputvis=measurement_set_target)
+if not os.path.exists(measurement_set_target):
+    split(vis=measurement_set, field=field, outputvis=measurement_set_target)
 
 print(f"Splitting into {df_store.shape[0]} measurement sets")
-split_ms_directories = split_ms(df_store, measurement_set_target)
+split_ms_directories, split_ms_paths = split_ms(df_store, measurement_set_target)
 
-batch_files = []
-for split_ms_directory in split_ms_directories:
+batch_file_paths = []
+for i in range(len(split_ms_directories)):
 
-    split_ms_name = os.path.splitext(split_ms_directory.split("/")[-1])[0]
+    split_ms_directory = split_ms_directories[i]
+    split_ms_path = split_ms_paths[i]
+    split_ms_name = os.path.splitext(os.path.basename(split_ms_path))[0] 
 
     # move all the files from the auto_sc directory into directory
-    shutil.copytree(auto_sc_files_directory, split_ms_directory)
+    os.makedirs(split_ms_directory, exist_ok=True)
+    for filepath in glob.glob(os.path.join(auto_sc_files_directory, '*.py')):
+        shutil.copy2(filepath, split_ms_directory)    
 
     # write batch file
     job_base = f"auto_selfcal_{split_ms_name}"
@@ -207,28 +246,31 @@ for split_ms_directory in split_ms_directories:
     # Create the SLURM job script content
     job_script_content = f"""#!/bin/bash
     
-    #SBATCH --account=nova
-    #SBATCH --partition=preempt
-    #SBATCH --job-name={job_base}
-    #SBATCH --output={job_base}.out
-    #SBATCH --error={job_base}.err
-    #SBATCH --time=7-00:00:00
-    #SBATCH --mem=64GB
-    #SBATCH --nodes=1
-    #SBATCH --ntasks-per-node=1
-    #SBATCH --cpus-per-task=1
-    #SBATCH --chdir={chdir_path}
-    
-    echo "loading casa"
-    module load casa/6.7.0
-    echo "loaded casa"
-    
-    echo "about to run auto_selfcal.py"
-    casa -c auto_selfcal.py
-    """
+#SBATCH --export=ALL                          # Export all environment variables to job
+#SBATCH --job-name={job_base}
+#SBATCH --output={job_base}.out
+#SBATCH --error={job_base}.err
+#SBATCH --chdir={chdir_path}
+#SBATCH --time=7-0:0:0                        # Request 8days
+#SBATCH --mem=128G                            # Memory for the whole job
+#SBATCH --nodes=1                             # Request 1 node
+#SBATCH --ntasks-per-node=8                   # Request 8 cores
+
+echo "about to run auto_selfcal.py"
+xvfb-run -d mpicasa casa --nogui -c auto_selfcal.py
+ """
     
     # Write the job script to a file
-    with open(job_script, "w") as f:
+    job_script_path = f"{split_ms_directory}/{job_script}"
+    with open(job_script_path, "w") as f:
         f.write(job_script_content)
     
     print(f"Job script {job_script} created.")
+    
+
+    batch_file_paths.append(job_script_path)
+
+with open('batch_files_list.txt', 'w') as f:
+    for path in batch_file_paths:
+        f.write(path + '\n')
+
