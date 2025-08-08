@@ -100,7 +100,7 @@ Check to make sure everything got copied over:
     cd measurement_set.ms
     ls
 
-I've had issues with the table.dat files not making it and that breaks everything. If you're missing table.dat, you can try to continue, but know that you may get an error. If so, the path of least resistance is to delete the ms on Talapas and re-upload it. If you're also missing table.dat from your local copy, you'll need to re-download the ms from the NRAO archive.
+I've had issues with the table.dat files not making it and that breaks everything. If you're missing table.dat, you can try to continue, but know that you may get an error. If so, the path of least resistance is to delete the ms on the cluster and re-upload it. If you're also missing table.dat from your local copy, you'll need to re-download the ms from the NRAO archive.
 
 It's probably not required, but you want the file system to be ~/Desktop/project_code/project_code.source_name.YYYY-MM-DD/project_code.source_name.YYYY-MM-DD.ms, so set that up via
 
