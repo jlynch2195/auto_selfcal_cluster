@@ -111,8 +111,8 @@ It's probably not required, but you want the file system to be ~/Desktop/project
 
 Now your filesystem is setup to be compatible with how I've written the scripts.
 
-## Set up auto-selfcal script Pt. 1: Do this only once, ever!
-Super important: this part takes some care and is vital to things working correctly!!! You'll need two sets of files: the auto_selfcal github repo, and my auto_selfcal_cluster repo, which you can clone into your Desktop via
+## Set-up Part 1: Do this only once, ever!
+__Super important__: this part takes some care and is vital to things working correctly!!! You'll need two sets of files: the auto_selfcal github repo, and my auto_selfcal_cluster repo, which you can clone into your Desktop via
 
     cd ~/Desktop
     git clone https://github.com/jlynch2195/auto_selfcal_cluster.git
@@ -127,7 +127,7 @@ The files in auto_selfcal_cluster need to know where the auto_selfcal repo is. S
 
 You'll also need to edit your username into a couple of other places: line 9 in install_pandas.py, and line 7 in clean_up_post_selfcal.py. Do these with nano as just above.
 
-## Set up auto-selfcal script Pt. 2: Do this everytime you run auto_selfcal!
+## Set-up Part 2: Do this for every new .ms!
 The auto_selfcal repo will live untouched in the location you wrote it. However, the scripts in the auto_selfcal_cluster folder need to be copied over into each observation folder directory and edited there to change things like the .ms name, frequencies, and so on. This makes version control somewhat challenging because you're not copying the repo itself, just the files in it, so you miss out on history. Copy over all the files from auto_selfcal_cluster:
 
     cp -r ~/Desktop/auto_selfcal_cluster/* ~/Desktop/project_code/project_code.source_name.YYYY-MM-DD
@@ -155,7 +155,7 @@ Once done editing, remember how to save: CTRL X, then y, then ENTER. You can che
     cat prep-ms-for-auto-selfcal.py
 
 ## Actually run auto_selfcal
-Important: before running any code, you need to make sure you're on an interactive node. Once you are, open up casa
+__Important__: before running any code, you need to make sure you're on an interactive node. Once you are, open up casa
 
     casa
 
@@ -186,9 +186,9 @@ All this means is that the jobs to run auto_selfcal on each split have been subm
     sacct -u nm-YYYYY --format=NodeList,JobID,JobName%90,State,Start,End
 
 There are a few statuses:
-* \bf{Completed}: cd into the split directory and list the files with ls. You should see a bunch of files, with a subset of them being named _final.image.tt0 and so on. That means it completed successfully.
-* Failed: (or for those that completed but there are not _final files) print (using "cat") the .out and .err files to see if you can identify what went wrong. "OOM" means out of memory, which has been the most common error thus far. To fix that, you can edit line 255 in prep-ms-for-auto_selfcal.py (#SBATCH --mem=128G) to change the memory limits. 128GB is already a ton though, so I don't have much guidance there.
-* Running: you can vibe check the progress by just seeing how many solution intervals the script has completed already. I believe it starts with large solution intervals and works down, such that the order of files you should see is something like dirty > initial > inf_EB > inf > As > Bs > int. If you see double digit seconds (like 42.00s) you're almost there.
+* __Completed__: cd into the split directory and list the files with ls. You should see a bunch of files, with a subset of them being named _final.image.tt0 and so on. That means it completed successfully.
+* __Failed__: (or for those that completed but there are not _final files) print (using "cat") the .out and .err files to see if you can identify what went wrong. "OOM" means out of memory, which has been the most common error thus far. To fix that, you can edit line 255 in prep-ms-for-auto_selfcal.py (#SBATCH --mem=128G) to change the memory limits. 128GB is already a ton though, so I don't have much guidance there.
+* __Running__: you can vibe check the progress by just seeing how many solution intervals the script has completed already. I believe it starts with large solution intervals and works down, such that the order of files you should see is something like dirty > initial > inf_EB > inf > As > Bs > int. If you see double digit seconds (like 42.00s) you're almost there.
 
 ## Get the results back locally
 I find it easiest to wait until every split is done running to consolidate results and transfer them locally. Once all the splits are done, the clean_up_post_selfcal.py script will put everything you want into a final_files folder. Edit it with nano to get the results you want:
