@@ -134,7 +134,7 @@ The auto_selfcal repo will live untouched in the location you wrote it. However,
 
 Move into your ~/Desktop/project_code/project_code.source_name.YYYY-MM-DD directory and list the files there with ls. You should see:
 
-    source_name.YYYY-MM-DD.ms  prep-ms-for-auto-selfcal.py  submit_batch_of_batch_jobs.py  install_pandas.py   vla-configuration-schedule.csv  vla-resolution.csv
+    project.source_name.YYYY-MM-DD.ms  prep-ms-for-auto-selfcal.py  submit_batch_of_batch_jobs.py  install_pandas.py   vla-configuration-schedule.csv  vla-resolution.csv
 
 The only file you need to edit is prep-ms-for-auto-selfcal.py. Copy the name of measurement_set.ms before opening nano and make sure you're in your project_code.source_name.YYYY-MM-DD directory
 
