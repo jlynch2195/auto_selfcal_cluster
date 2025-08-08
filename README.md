@@ -186,9 +186,9 @@ All this means is that the jobs to run auto_selfcal on each split have been subm
     sacct -u nm-YYYYY --format=NodeList,JobID,JobName%90,State,Start,End
 
 There are a few statuses:
-* For the ones that are completed, cd into the split directory and list the files with ls. You should see a bunch of files, with a subset of them being named _final.image.tt0 and so on. That means it completed successfully.
-* For the ones that failed, or for those that completed but there are not _final files, print (using "cat") the .out and .err files to see if you can identify what went wrong. "OOM" means out of memory, which has been the most common error thus far. To fix that, you can edit line 255 in prep-ms-for-auto_selfcal.py (#SBATCH --mem=128G) to change the memory limits. 128GB is already a ton though, so I don't have much guidance there.
-* For the ones that are running, you can vibe check the progress by just seeing how many solution intervals the script has completed already. I believe it starts with large solution intervals and works down, such that the order of files you should see is something like dirty > initial > inf_EB > inf > As > Bs > int. If you see double digit seconds (like 42.00s) you're almost there.
+* \bf{Completed}: cd into the split directory and list the files with ls. You should see a bunch of files, with a subset of them being named _final.image.tt0 and so on. That means it completed successfully.
+* Failed: (or for those that completed but there are not _final files) print (using "cat") the .out and .err files to see if you can identify what went wrong. "OOM" means out of memory, which has been the most common error thus far. To fix that, you can edit line 255 in prep-ms-for-auto_selfcal.py (#SBATCH --mem=128G) to change the memory limits. 128GB is already a ton though, so I don't have much guidance there.
+* Running: you can vibe check the progress by just seeing how many solution intervals the script has completed already. I believe it starts with large solution intervals and works down, such that the order of files you should see is something like dirty > initial > inf_EB > inf > As > Bs > int. If you see double digit seconds (like 42.00s) you're almost there.
 
 ## Get the results back locally
 I find it easiest to wait until every split is done running to consolidate results and transfer them locally. Once all the splits are done, the clean_up_post_selfcal.py script will put everything you want into a final_files folder. Edit it with nano to get the results you want:
