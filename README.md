@@ -5,10 +5,10 @@ All credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal). This c
 
 ## Best uses for auto_selfcal
 I have found auto_selfcal to be good at...
-1. Cleaning signal from off-center bright sources in FOV
-2. Improving point-source shapes to look more beam-like
-3. Producing clean noise pattern free of patches near source
-4. Achieving low RMS. Ex: the following RMS values are achieved from 2hr SEDs with strong source signal: 15-40 uJy in L-band, 10-35 uJy in S-band, 20-40 uJy in C-band, and 20-35 uJy in X-band.
+* Cleaning signal from off-center bright sources in FOV
+* Improving point-source shapes to look more beam-like
+* Producing clean noise pattern free of patches near source
+* Achieving low RMS. Ex: the following RMS values are achieved from 2hr SEDs with strong source signal: 15-40 uJy in L-band, 10-35 uJy in S-band, 20-40 uJy in C-band, and 20-35 uJy in X-band.
 
 If your image is already decent, it will not do dramatically change the flux values and RMS levels you'll report, though it may visually improve the image. However, if you have a wonky SED, it's worth trying out.
 
