@@ -1,5 +1,5 @@
 # Run automatic self-calibration on NRAO cluster 
-All credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal). This code is designed to streamline running github code auto_selfcal on clusters we have access to at UO and NRAO. 
+Credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal) for developing the auto_selfcal code package itself. My code below is simply designed to streamline running auto_selfcal on clusters we have access to at UO and NRAO. 
 
 (TODO) NOTE: this code can be tweaked to run on Talapas with the following changes with respect to filesystem and SLURM scheduler options.
 
