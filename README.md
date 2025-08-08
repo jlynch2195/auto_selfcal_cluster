@@ -4,11 +4,11 @@ All credit to Patrick Sheehan (https://github.com/psheehan/auto_selfcal). This c
 (TODO) NOTE: this code can be tweaked to run on Talapas with the following changes with respect to filesystem and SLURM scheduler options.
 
 ## Best uses for auto_selfcal
-I have found auto_selfcal to...
-1. Clean signal from off-center bright sources in FOV
-2. Improve point-source shapes to look more beam-like
-3. Produce clean noise pattern free of patches near source
-4. Achieve between 1-2x the theoretical noise floor
+I have found auto_selfcal to be good at...
+1. Cleaning signal from off-center bright sources in FOV
+2. Improving point-source shapes to look more beam-like
+3. Producing clean noise pattern free of patches near source
+4. Achieving low RMS. Ex: the following RMS values are achieved from 2hr SEDs with strong source signal: 15-40 uJy in L-band, 10-35 uJy in S-band, 20-40 uJy in C-band, and 20-35 uJy in X-band.
 
 If your image is already decent, it will not do dramatically change the flux values and RMS levels you'll report, though it may visually improve the image. However, if you have a wonky SED, it's worth trying out.
 
@@ -16,7 +16,8 @@ If your image is already decent, it will not do dramatically change the flux val
 Patrick Sheehan's auto_selfcal (https://github.com/psheehan/auto_selfcal) solves for a range of calibration solutions using different solution intervals and applies the best-fit ones to the measurement set. It then creates a final image for you using the self-cal measurement set. It has capability to do a multi-frequency .ms for an SED but it would realistically require running in parallel using mpicasa, which I have found to error on both Talapas and NRAO. Also, I don't believe you can create a split-band image if you self-cal the entire SED unless you then apply the calibrations to create the _final.ms and then image the _final.ms yourself. That is probably a good thing to work out at some point, but it seemed like extra steps. Here's the workaround that I've adapted: split your .ms into the half-bands and then submit separate batch jobs for each. This in theory solves two issues: a) you get automatic _final.image.tt0 images from the auto_selfcal script without having to re-image from the _final.ms and b) you can submit several of these split-band auto_selfcal jobs at the same time, effectively running an entire SED worth in 8-12 parallel jobs. It gets the job done.
 
 ## Other notes
-Low-frequencies at A-config take forever to run (sometimes timing out after a week) and produce large (~2GB) _final.* files. I'm yet to establish the trend exactly. Consider this before running auto_selfcal on SEDs taken at A config.
+* This takes up a LOT of storage space! Running auto_selfcal on an A-config SED will produce about 2 TB of data over the course of the job. Some of this is from tclean's temp lattices that are deleted afterwards, but you still will have to clean up your directory on NRAO afterwards, and you will not be able to run on Talapas if you only have the default storage quota. I have a script to clean things up for you.
+* Low-frequencies at A-config take forever to run (sometimes timing out after a week) and produce large (~2GB) _final.* files. I'm yet to establish the trend exactly. Consider this before running auto_selfcal on SEDs taken at A config.
 
 ## Getting started with GitHub
 To obtain a local copy of this code + its supporting materials, clone the repository in Terminal via
