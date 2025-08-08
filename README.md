@@ -81,7 +81,7 @@ Type whatever you want and save with CTRL X, then y, then ENTER. You can check t
 
 There are probably options to utilize a graphical user interface with the NRAO cluster but this has worked for me so far. Just takes some getting used to.
 
-## Get your measurement set to Talapas
+## Get your measurement set to cluster
 It's about 10 times faster (than the method below) if you just request the data from the NRAO archive and then use the wget command from the email directly in your home directory on the NRAO cluster.
 
 However, if you have a .ms locally that you wish to copy over, open up a new terminal window on your local machine. Now copy your measurement set to your home directory on NRAO:
