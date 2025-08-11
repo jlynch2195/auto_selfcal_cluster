@@ -135,24 +135,18 @@ def scrape_listfile(listfile, source_name):
     
         # lower
         freq_ghz = round(df_lower["CtrFreq(MHz)"].values.astype(float).mean()/1000, 2)
-        if band == "EVLA_L":
-            freq_ghz = 1.25
         spws = df_lower["SpwID"].values.astype(int)
         spw_range = f"{min(spws)}~{max(spws)}"
         rows_list.append({"band":band, "split":"lower", "freq [GHz]":freq_ghz, "spws":spw_range, "cell size [arcsec/pixel]":cell_size})
     
         # upper
         freq_ghz = round(df_upper["CtrFreq(MHz)"].values.astype(float).mean()/1000, 2)
-        if band == "EVLA_L":
-            freq_ghz = 1.5
         spws = df_upper["SpwID"].values.astype(int)
         spw_range = f"{min(spws)}~{max(spws)}"
         rows_list.append({"band":band, "split":"upper", "freq [GHz]":freq_ghz, "spws":spw_range, "cell size [arcsec/pixel]":cell_size})
 
         # all
         freq_ghz = round(df_all["CtrFreq(MHz)"].values.astype(float).mean()/1000, 2)
-        if band == "EVLA_L":
-            freq_ghz = 1.75
         spws = df_all["SpwID"].values.astype(int)
         spw_range = f"{min(spws)}~{max(spws)}"
         rows_list.append({"band":band, "split":"all", "freq [GHz]":freq_ghz, "spws":spw_range, "cell size [arcsec/pixel]":cell_size})
