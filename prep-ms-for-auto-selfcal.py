@@ -251,7 +251,7 @@ for i in range(len(split_ms_directories)):
 #SBATCH --ntasks-per-node=8                   # Request 8 cores
 
 echo "about to run auto_selfcal.py"
-xvfb-run -d mpicasa casa --nogui -c auto_selfcal.py
+xvfb-run -d /home/casa/packages/RHEL8/release/casa-6.6.4-34-py3.8.el8/bin/mpicasa /home/casa/packages/RHEL8/release/casa-6.6.4-34-py3.8.el8/bin/casa --nogui -c auto_selfcal.py
  """
     
     # Write the job script to a file
