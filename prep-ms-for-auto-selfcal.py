@@ -124,8 +124,10 @@ def scrape_listfile(listfile, source_name):
         df_band = df.iloc[indxs]
     
         # remove two cal spws from X-band
-        if band == "EVLA_X":
-            df_band = df_band.iloc[2:]
+        # second if statement fails when the setup scans are the only EVLA_X scans in ms so added the first if statement (not tested yet)
+        if not use_single_band:
+            if band == "EVLA_X":
+                df_band = df_band.iloc[2:]
     
         # split into frequency bands
         nspws = df_band.shape[0]
